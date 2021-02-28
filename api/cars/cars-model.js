@@ -5,10 +5,24 @@ const getAll = () => {
   return db("cars")
 }
 
-const getById = () => {
+const getById = (id) => {
   // DO YOUR MAGIC
+  return db("cars")
+    .where({ id })
+    .first()
 }
 
-const create = () => {
+const create = async (car) => {
   // DO YOUR MAGIC
+  return db("cars")
+    .insert(car)
+    .then(ids => {
+      return getById(ids[0])
+    });
+}
+
+module.exports = {
+  getAll,
+  getById,
+  create
 }
