@@ -26,9 +26,9 @@ router.post('/', checkVinNumberValid, checkVinNumberUnique, checkCarPayload, (re
   try {
     const car = await db.create({
       vin: req.body.vin.trim(),
-      make: req.body.make,
-      model: req.body.model,
-      mileage: req.body.mileage,
+      make: req.body.make.trim(),
+      model: req.body.model.trim(),
+      mileage: req.body.mileage.trim(),
       title: req.body.title,
       transmission: req.body.transmission
     })
