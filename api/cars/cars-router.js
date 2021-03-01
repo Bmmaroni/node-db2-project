@@ -12,7 +12,7 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-router.get('/:id', checkCarId, (req, res, next) => {
+router.get('/:id', checkCarId, async (req, res, next) => {
   try {
     const car = await db.getById(req.params.id)
     res.json(car)
@@ -22,17 +22,11 @@ router.get('/:id', checkCarId, (req, res, next) => {
   }
 })
 
-router.post('/', checkVinNumberValid, checkVinNumberUnique, checkCarPayload, (req, res, next) => {
+router.post('/', checkCarPayload, checkVinNumberValid, checkVinNumberUnique, async (req, res, next) => {
   try {
-    const car = await db.create({
-      vin: req.body.vin.trim(),
-      make: req.body.make.trim(),
-      model: req.body.model.trim(),
-      mileage: req.body.mileage.trim(),
-      title: req.body.title,
-      transmission: req.body.transmission
-    })
-    res.status(201).json(car)
+    const newCar = await db.create(req.body)
+    const createdCar = await db.getById(newCar)
+    res.status(201).json(createdCar)
 
   } catch (err) {
       next(err)
@@ -42,7 +36,7 @@ router.post('/', checkVinNumberValid, checkVinNumberUnique, checkCarPayload, (re
 router.use((err, req, res, next) => {
   res.status(500).json({
     message: "something went wrong inside the cars router",
-    errMessage: err.message
+    errMessage: err.message,
   })
 })
 
